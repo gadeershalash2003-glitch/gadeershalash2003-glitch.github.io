@@ -21,6 +21,11 @@
 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- Leaflet Search CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" />
+
+<!-- Leaflet Search JS -->
+<script src="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.js"></script>
 <script>
   // 1️⃣ إعداد الخريطة
   const map = L.map('map', {
@@ -115,6 +120,19 @@ map.addControl(new northControl());
     addLayerControl();
   });
 
+  // 6️⃣ إضافة Search بعد تحميل zonesLayer
+const searchControl = new L.Control.Search({
+  layer: zonesLayer,
+  propertyName: 'TYPE_OF_WA', // الحقل المستخدم للبحث
+  marker: false,
+  moveToLocation: function(latlng, title, map) {
+    map.setView(latlng, 18); // تكبير الخريطة عند العثور على المنطقة
+  }
+});
+map.addControl(searchControl);
+
+addLayerControl(); // اضغط على الطبقات بعد إضافة search
+
   // 6️⃣ إضافة Layer Control بعد تحميل كل الطبقات
   function addLayerControl() {
     if (wasteContainersLayer && zonesLayer) {
@@ -128,6 +146,7 @@ map.addControl(new northControl());
 </script>
 </body>
 </html>
+
 
 
 
