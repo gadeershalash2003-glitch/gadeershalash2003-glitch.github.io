@@ -38,15 +38,15 @@
   // 3️⃣ إشارة الشمال
   const northControl = L.Control.extend({
     options: { position: 'topright' },
-    onAdd: function () {
-      const div = L.DomUtil.create('div');
-      div.style.width = '40px';
-      div.style.height = '40px';
-      div.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/3/3c/North_arrow_04.png')";
-      div.style.backgroundSize = "contain";
-      div.style.backgroundRepeat = "no-repeat";
-      div.style.backgroundPosition = "center";
-      return div;
+    onAdd: function (map) {
+      const container = L.DomUtil.create('div');
+      container.style.width = '40px';
+      container.style.height = '40px';
+      container.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/3/3c/North_arrow_04.png')";
+      container.style.backgroundSize = "contain";
+      container.style.backgroundRepeat = "no-repeat";
+      container.style.backgroundPosition = "center";
+      return container;
     }
   });
   map.addControl(new northControl());
@@ -107,6 +107,7 @@
 </script>
 </body>
 </html>
+
 
 
 
