@@ -115,6 +115,38 @@ coordsControl.onAdd = function (map) {
   return div;
 };
 
+    // 1️⃣ تحميل طبقة الحاويات
+$.getJSON("wasteContainer.json", function(WC) {
+
+    // 2️⃣ تحويل GeoJSON إلى FeatureCollection (Turf)
+    const points = turf.featureCollection(WC.features);
+
+    // 3️⃣ إنشاء clusters باستخدام Turf (DBSCAN)
+    const clustered = turf.clustersDbscan(points, {eps: 0.001, minPoints: 2}); 
+    // eps = 0.001 ≈ 100 متر، minPoints = أقل عدد نقاط لتشكيل cluster
+
+    // 4️⃣ رسم كل نقطة حسب الكلاستر
+    L.geoJson(clustered, {
+        pointToLayer: function(feature, latlng) {
+            const cluster = feature.properties.cluster; // cluster id
+            const color = cluster === undefined ? 'gray' : getColor(cluster);
+            return L.circleMarker(latlng, {
+                radius: 6,
+                fillColor: color,
+                color: color,
+                weight: 1,
+                fillOpacity: 0.8
+            });
+        }
+    }).addTo(map);
+});
+
+// دالة لتلوين الكلاسترات
+function getColor(id){
+    const colors = ["red","blue","green","orange","purple","yellow","cyan","magenta"];
+    return colors[id % colors.length];
+}
+
     import geopandas as gpd
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
@@ -160,6 +192,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
