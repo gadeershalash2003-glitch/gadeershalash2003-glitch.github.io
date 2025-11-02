@@ -67,7 +67,22 @@ L.control.scale({
     maxWidth: 150
 }).addTo(map);
     
-    
+
+// 5️⃣ إضافة اشارة الشمال
+L.Control.North = L.Control.extend({
+    onAdd: function(map) {
+        const container = L.DomUtil.create('div');
+        container.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/North_arrow.svg/120px-North_arrow.svg.png')";
+        container.style.backgroundSize = "40px 40px";
+        container.style.width = "40px";
+        container.style.height = "40px";
+        container.style.backgroundRepeat = "no-repeat";
+        container.style.backgroundPosition = "center";
+        return container;
+    }
+});
+L.control.north = function(opts) { return new L.Control.North(opts); }
+L.control.north({ position: 'topright' }).addTo(map);
 // use jquery to load GeoJSON data
     
     $.getJSON("wasteContainer.json", function(WC) {
@@ -155,6 +170,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
