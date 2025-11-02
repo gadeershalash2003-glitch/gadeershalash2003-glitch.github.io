@@ -67,21 +67,22 @@ L.control.scale({
     maxWidth: 150
 }).addTo(map);
     
-// 4️⃣ إشارة الشمال
-const northIcon = L.Control.extend({
+    
+  // 4️⃣ إشارة الشمال
+  const North = L.Control.extend({
     options: { position: 'topright' },
     onAdd: function () {
-        const container = L.DomUtil.create('div');
-        container.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/North_arrow.svg/120px-North_arrow.svg.png')";
-        container.style.backgroundSize = "30px 30px";
-        container.style.width = "30px";
-        container.style.height = "30px";
-        container.style.backgroundRepeat = "no-repeat";
-        container.style.backgroundPosition = "center";
-        return container;
+      const div = L.DomUtil.create('div');
+      div.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/North_arrow.svg/120px-North_arrow.svg.png')";
+      div.style.width = "30px";
+      div.style.height = "30px";
+      div.style.backgroundSize = "30px 30px";
+      div.style.backgroundRepeat = "no-repeat";
+      div.style.backgroundPosition = "center";
+      return div;
     }
-});
-map.addControl(new northIcon());
+  });
+  map.addControl(new North());
     
 // use jquery to load GeoJSON data
     
@@ -152,6 +153,7 @@ coordsControl.onAdd = function (map) {
   </script>
 </body>
 </html>
+
 
 
 
