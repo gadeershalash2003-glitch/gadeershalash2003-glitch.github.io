@@ -3,11 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <title>Ramallah Waste Containers</title>
-
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
-  <!-- Leaflet Search CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" />
-
   <style>
     body { margin: 0; height: 100%; width: 100%; }
     #map { position: absolute; width: 100%; top: 0; bottom: 0; }
@@ -25,15 +22,13 @@
 
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- Leaflet Search JS -->
 <script src="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.js"></script>
 
 <script>
   // 1️⃣ إعداد الخريطة
   const map = L.map('map', { zoomSnap: 0.5, center: [31.9045, 35.2045], zoom: 17.5 });
-
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     subdomains: 'abcd', maxZoom: 20
   }).addTo(map);
 
@@ -43,15 +38,15 @@
   // 3️⃣ إشارة الشمال
   const northControl = L.Control.extend({
     options: { position: 'topright' },
-    onAdd: function (map) {
-      const container = L.DomUtil.create('div');
-      container.style.width = '40px';
-      container.style.height = '40px';
-      container.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/3/3c/North_arrow_04.png')";
-      container.style.backgroundSize = "contain";
-      container.style.backgroundRepeat = "no-repeat";
-      container.style.backgroundPosition = "center";
-      return container;
+    onAdd: function () {
+      const div = L.DomUtil.create('div');
+      div.style.width = '40px';
+      div.style.height = '40px';
+      div.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/3/3c/North_arrow_04.png')";
+      div.style.backgroundSize = "contain";
+      div.style.backgroundRepeat = "no-repeat";
+      div.style.backgroundPosition = "center";
+      return div;
     }
   });
   map.addControl(new northControl());
@@ -68,15 +63,13 @@
   };
   coordsControl.addTo(map);
 
-  // 5️⃣ تحميل الطبقات وتخزينها
+  // 5️⃣ تحميل الطبقات
   let wasteContainersLayer, zonesLayer;
 
   $.getJSON("wasteContainer.json", function(WC) {
     wasteContainersLayer = L.geoJson(WC, {
       pointToLayer: function(feature, latlng) {
-        return L.circleMarker(latlng, {
-          radius: 5, fillColor: "orange", color: "orange", weight: 1, opacity: 1, fillOpacity: 0.8
-        });
+        return L.circleMarker(latlng, { radius: 5, fillColor: "orange", color: "orange", weight: 1, opacity: 1, fillOpacity: 0.8 });
       }
     }).addTo(map);
     addLayerControl();
@@ -84,11 +77,9 @@
 
   $.getJSON("RamallahZones.json", function(RZ) {
     zonesLayer = L.geoJson(RZ, {
-      style: function(feature) {
-        return { fillColor: "yellow", fillOpacity: 0.3, color: "yellow", weight: 1.0, opacity: 0.7 };
-      },
+      style: function(feature) { return { fillColor: "yellow", fillOpacity: 0.3, color: "yellow", weight: 1.0, opacity: 0.7 }; },
       onEachFeature: function(feature, layer) {
-        layer.on('click', function(e) {
+        layer.on('click', function() {
           alert("Zone: " + feature.properties.TYPE_OF_WA + "\nMAIL_CODE: " + feature.properties.MAIL_CODE);
         });
       }
@@ -99,27 +90,25 @@
       layer: zonesLayer,
       propertyName: 'TYPE_OF_WA',
       marker: false,
-      moveToLocation: function(latlng, title, map) {
-        map.setView(latlng, 18);
-      }
+      moveToLocation: function(latlng, title, map) { map.setView(latlng, 18); }
     });
     map.addControl(searchControl);
 
     addLayerControl();
   });
 
-  // 7️⃣ إضافة Layer Control بعد تحميل كل الطبقات
+  // 7️⃣ Layer Control
   function addLayerControl() {
     if (wasteContainersLayer && zonesLayer) {
-      L.control.layers({}, {
-        "Zones": zonesLayer,
-        "Waste Containers": wasteContainersLayer
-      }).addTo(map);
+      L.control.layers({}, { "Zones": zonesLayer, "Waste Containers": wasteContainersLayer }).addTo(map);
     }
   }
+
 </script>
 </body>
 </html>
+
+
 
 
 
