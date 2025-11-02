@@ -115,6 +115,36 @@ coordsControl.onAdd = function (map) {
   return div;
 };
 
+    import geopandas as gpd
+import matplotlib.pyplot as plt
+from sklearn.cluster import DBSCAN
+import numpy as np
+
+# 1️⃣ تحميل طبقة الحاويات
+containers = gpd.read_file("wasteContainer.shp")
+
+# 2️⃣ التأكد أن جميع النقاط صحيحة
+containers = containers[containers.geometry.type == "Point"]
+
+# 3️⃣ استخراج الإحداثيات
+coords = np.array(list(zip(containers.geometry.x, containers.geometry.y)))
+
+# 4️⃣ تنفيذ DBSCAN
+db = DBSCAN(eps=0.002, min_samples=3)  # eps بالمقياس الإحداثي، اضبطه حسب المنطقة
+clusters = db.fit_predict(coords)
+
+# 5️⃣ حفظ النتائج
+containers['cluster'] = clusters
+
+# 6️⃣ رسم النتائج
+fig, ax = plt.subplots(figsize=(10,8))
+containers.plot(column='cluster', categorical=True, legend=True, cmap='Set1', markersize=30, ax=ax)
+plt.title("DBSCAN Clustering of Waste Containers")
+plt.show()
+
+# 7️⃣ تصدير النتائج
+containers.to_file("Containers_DBSCAN_Clusters.shp")
+
 coordsControl.addTo(map);
 
     // Add layers to map with control options
@@ -130,6 +160,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
