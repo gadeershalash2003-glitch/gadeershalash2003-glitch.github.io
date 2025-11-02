@@ -105,27 +105,12 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     // Add layer control to the map
     L.control.layers(baseLayers, overlays).addTo(map);
 
-    // Add both layers to the map by default
-    zonesLayer.addTo(map);
-    wasteContainersLayer.addTo(map);
-    onEachFeature: function (feature, layer) {
-  layer.bindPopup(
-    `<b>Container ID:</b> ${feature.properties.ID}<br>
-     <b>Type:</b> ${feature.properties.Type}<br>
-     <b>Capacity:</b> ${feature.properties.Capacity} L`
-  );
-}
-    const north = L.control({position: "topright"});
-north.onAdd = function(map) {
-  const div = L.DomUtil.create("div", "info legend");
-  div.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/North_arrow.svg" style="width:50px;">';
-  return div;
-};
-north.addTo(map);
+
   </script>
 </body>
 
 </html>
+
 
 
 
