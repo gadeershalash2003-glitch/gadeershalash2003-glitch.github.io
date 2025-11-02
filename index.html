@@ -3,11 +3,18 @@
 <head>
   <meta charset="utf-8" />
   <title>Ramallah Waste Containers</title>
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+
+  <!-- Leaflet Search CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" />
+
   <style>
     body { margin: 0; height: 100%; width: 100%; }
     #map { position: absolute; width: 100%; top: 0; bottom: 0; }
+
+    /* عرض الإحداثيات */
     .coordinate-control {
       background: rgba(255, 255, 255, 0.8);
       padding: 5px 10px;
@@ -15,17 +22,40 @@
       font-size: 12px;
       font-weight: bold;
     }
+
+    /* تخصيص شريط البحث */
+    .leaflet-control-search {
+      border-radius: 5px;
+      background: rgba(255,255,255,0.9);
+      padding: 5px;
+      width: 220px;
+    }
+
+    .leaflet-control-search input {
+      width: 200px;
+      padding: 3px 5px;
+      border-radius: 3px;
+      border: 1px solid #aaa;
+      font-size: 13px;
+    }
+
+    .leaflet-control-search button {
+      display: none;
+    }
   </style>
 </head>
 <body>
 <div id="map"></div>
 
-<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+<!-- Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.js"></script>
+
 <script>
   // 1️⃣ إعداد الخريطة
   const map = L.map('map', { zoomSnap: 0.5, center: [31.9045, 35.2045], zoom: 17.5 });
+
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     subdomains: 'abcd', maxZoom: 20
@@ -37,7 +67,7 @@
   // 3️⃣ إشارة الشمال
   const northControl = L.Control.extend({
     options: { position: 'topright' },
-    onAdd: function (map) {
+    onAdd: function(map) {
       const container = L.DomUtil.create('div');
       container.style.width = '40px';
       container.style.height = '40px';
@@ -52,10 +82,10 @@
 
   // 4️⃣ عرض الإحداثيات
   const coordsControl = L.control({ position: 'bottomleft' });
-  coordsControl.onAdd = function (map) {
+  coordsControl.onAdd = function(map) {
     const div = L.DomUtil.create('div', 'coordinate-control');
     div.innerHTML = 'Lat: -- , Lng: --';
-    map.on('mousemove', function (e) {
+    map.on('mousemove', function(e) {
       div.innerHTML = 'Lat: ' + e.latlng.lat.toFixed(5) + ' , Lng: ' + e.latlng.lng.toFixed(5);
     });
     return div;
@@ -76,7 +106,9 @@
 
   $.getJSON("RamallahZones.json", function(RZ) {
     zonesLayer = L.geoJson(RZ, {
-      style: function(feature) { return { fillColor: "yellow", fillOpacity: 0.3, color: "yellow", weight: 1.0, opacity: 0.7 }; },
+      style: function(feature) {
+        return { fillColor: "yellow", fillOpacity: 0.3, color: "yellow", weight: 1.0, opacity: 0.7 };
+      },
       onEachFeature: function(feature, layer) {
         layer.on('click', function() {
           alert("Zone: " + feature.properties.TYPE_OF_WA + "\nMAIL_CODE: " + feature.properties.MAIL_CODE);
@@ -84,11 +116,12 @@
       }
     }).addTo(map);
 
-    // 6️⃣ إضافة Search بعد تحميل zonesLayer
+    // 6️⃣ Search Control (احترافي)
     const searchControl = new L.Control.Search({
       layer: zonesLayer,
       propertyName: 'TYPE_OF_WA',
       marker: false,
+      textPlaceholder: 'ابحث عن المنطقة...',
       moveToLocation: function(latlng, title, map) { map.setView(latlng, 18); }
     });
     map.addControl(searchControl);
@@ -102,33 +135,9 @@
       L.control.layers({}, { "Zones": zonesLayer, "Waste Containers": wasteContainersLayer }).addTo(map);
     }
   }
-  
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
