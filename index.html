@@ -115,10 +115,19 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
      <b>Capacity:</b> ${feature.properties.Capacity} L`
   );
 }
+    const north = L.control({position: "topright"});
+north.onAdd = function(map) {
+  const div = L.DomUtil.create("div", "info legend");
+  div.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/North_arrow.svg" style="width:50px;">';
+  return div;
+};
+north.addTo(map);
+
 
   </script>
 </body>
 
 </html>
+
 
 
