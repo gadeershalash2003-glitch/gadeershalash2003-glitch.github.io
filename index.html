@@ -83,6 +83,7 @@ L.Control.North = L.Control.extend({
 });
 L.control.north = function(opts) { return new L.Control.North(opts); }
 L.control.north({ position: 'topright' }).addTo(map);
+    
 // use jquery to load GeoJSON data
     
     $.getJSON("wasteContainer.json", function(WC) {
@@ -170,6 +171,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
