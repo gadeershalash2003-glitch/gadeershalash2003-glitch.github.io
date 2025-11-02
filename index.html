@@ -66,6 +66,8 @@ L.control.scale({
     imperial: false,
     maxWidth: 150
 }).addTo(map);
+
+    
   // 4️⃣ إشارة الشمال
   const North = L.Control.extend({
     options: { position: 'topright' },
@@ -81,6 +83,7 @@ L.control.scale({
     }
   });
   map.addControl(new North());
+    
     
 // use jquery to load GeoJSON data
     
@@ -151,6 +154,7 @@ coordsControl.onAdd = function (map) {
   </script>
 </body>
 </html>
+
 
 
 
