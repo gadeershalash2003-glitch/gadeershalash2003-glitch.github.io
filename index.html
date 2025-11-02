@@ -59,7 +59,14 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 20
 }).addTo(map);
 
-
+L.control.scale({
+    position: 'bottomright',
+    metric: true,
+    imperial: false,
+    maxWidth: 150
+}).addTo(map);
+    
+    
 // use jquery to load GeoJSON data
     
     $.getJSON("wasteContainer.json", function(WC) {
@@ -154,6 +161,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
