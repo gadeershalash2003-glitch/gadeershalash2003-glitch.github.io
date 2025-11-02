@@ -116,7 +116,7 @@ coordsControl.onAdd = function (map) {
 };
 
     // 1️⃣ تحميل طبقة الحاويات
-$.getJSON("wasteContainer.json", function(WC) {
+     $.getJSON("wasteContainer.json", function(WC) {
 
     // 2️⃣ تحويل GeoJSON إلى FeatureCollection (Turf)
     const points = turf.featureCollection(WC.features);
@@ -192,6 +192,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
