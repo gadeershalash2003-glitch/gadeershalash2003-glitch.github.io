@@ -59,12 +59,14 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   maxZoom: 20
 }).addTo(map);
     
+    
 L.control.scale({
     position: 'bottomright',
     metric: true,
     imperial: false,
     maxWidth: 150
 }).addTo(map);
+    
 
   // 4️⃣ إشارة الشمال
   const North = L.Control.extend({
@@ -151,6 +153,7 @@ coordsControl.onAdd = function (map) {
   </script>
 </body>
 </html>
+
 
 
 
