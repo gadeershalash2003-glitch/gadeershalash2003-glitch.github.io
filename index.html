@@ -108,8 +108,17 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     // Add both layers to the map by default
     zonesLayer.addTo(map);
     wasteContainersLayer.addTo(map);
+    onEachFeature: function (feature, layer) {
+  layer.bindPopup(
+    `<b>Container ID:</b> ${feature.properties.ID}<br>
+     <b>Type:</b> ${feature.properties.Type}<br>
+     <b>Capacity:</b> ${feature.properties.Capacity} L`
+  );
+}
+
   </script>
 </body>
 
 </html>
+
 
