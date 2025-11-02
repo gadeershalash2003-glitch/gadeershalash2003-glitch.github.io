@@ -116,7 +116,7 @@ coordsControl.onAdd = function (map) {
 };
     
 // 1️⃣ مقياس الرسم (Scale)
-L.control.scale({
+  L.control.scale({
     position: 'bottomright',   // مكان المقياس
     metric: true,              // عرض القياس بالمتر/كيلومتر
     imperial: false,           // لا تعرض بالميل/قدم
@@ -124,7 +124,7 @@ L.control.scale({
 }).addTo(map);
 
 // 2️⃣ اشارة الشمال (North Arrow)
-const northIcon = L.Control.extend({
+ const northIcon = L.Control.extend({
     options: { position: 'topright' },
     onAdd: function (map) {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
@@ -137,7 +137,7 @@ const northIcon = L.Control.extend({
         return container;
     }
 });
-map.addControl(new northIcon());
+  map.addControl(new northIcon());
   
 coordsControl.addTo(map);
 
@@ -154,6 +154,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
