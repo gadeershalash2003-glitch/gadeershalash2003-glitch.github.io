@@ -109,9 +109,9 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         map.on('mousemove', function (e) {
         div.innerHTML =
        'Lat: ' + e.latlng.lat.toFixed(5) + ' , Lng: ' + e.latlng.lng.toFixed(5);
-  });
+    });
         return div;
-};
+    };
 
 coordsControl.addTo(map);
 
@@ -128,6 +128,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
