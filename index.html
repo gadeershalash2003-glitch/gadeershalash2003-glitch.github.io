@@ -43,27 +43,26 @@
     maxWidth: 150
   }).addTo(map);
 
-// إشارة الشمال (North Arrow)
-L.Control.North = L.Control.extend({
-    onAdd: function(map) {
-        const img = L.DomUtil.create('img');
-        img.src = 'https://upload.wikimedia.org/wikipedia/commons/e/e3/North_arrow.svg';
-        img.style.width = '40px';
-        img.style.height = '40px';
-        img.style.pointerEvents = 'none'; // حتى لا تمنع النقر على الخريطة
-        return img;
-    },
-    onRemove: function(map) {
-        // nothing to do here
-    }
+<script>
+// 1️⃣ إنشاء عنصر جديد لإشارة الشمال
+const northControl = L.Control.extend({
+  options: { position: 'topright' },
+  onAdd: function (map) {
+    const container = L.DomUtil.create('div');
+    container.style.width = '40px';
+    container.style.height = '40px';
+    container.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/3/3c/North_arrow_04.png')";
+    container.style.backgroundSize = "contain";
+    container.style.backgroundRepeat = "no-repeat";
+    container.style.backgroundPosition = "center";
+    return container;
+  }
 });
 
-L.control.north = function(opts) {
-    return new L.Control.North(opts);
-}
+// 2️⃣ إضافة إشارة الشمال إلى الخريطة
+map.addControl(new northControl());
+</script>
 
-// إضافة إشارة الشمال على الخريطة
-L.control.north({ position: 'topright' }).addTo(map);
 
   // 4️⃣ عرض الإحداثيات
   const coordsControl = L.control({ position: 'bottomleft' });
@@ -129,6 +128,7 @@ L.control.north({ position: 'topright' }).addTo(map);
 </script>
 </body>
 </html>
+
 
 
 
