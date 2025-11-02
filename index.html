@@ -115,6 +115,19 @@ map.addControl(new northControl());
     addLayerControl();
   });
 
+      const searchControl = new L.Control.Search({
+      layer: zonesLayer,
+      propertyName: 'TYPE_OF_WA', // حقل اسم المنطقة
+      marker: false,
+      moveToLocation: function(latlng, title, map) {
+        map.setView(latlng, 18); // تكبير الخريطة للمنطقة عند البحث
+      }
+    });
+    searchControl.addTo(map);
+
+    addLayerControl();
+});
+
   // 6️⃣ إضافة Layer Control بعد تحميل كل الطبقات
   function addLayerControl() {
     if (wasteContainersLayer && zonesLayer) {
@@ -128,6 +141,7 @@ map.addControl(new northControl());
 </script>
 </body>
 </html>
+
 
 
 
