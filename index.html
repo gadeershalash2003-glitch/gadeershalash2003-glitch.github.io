@@ -115,30 +115,6 @@ coordsControl.onAdd = function (map) {
   return div;
 };
 
-    import geopandas as gpd
-import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
-import numpy as np
-
-# 1️⃣ تحميل طبقة الحاويات
-containers = gpd.read_file("wasteContainer.shp")
-
-# 2️⃣ تجهيز الإحداثيات للنموذج
-coords = np.array(list(zip(containers.geometry.x, containers.geometry.y)))
-
-# 3️⃣ تنفيذ K-Means
-kmeans = KMeans(n_clusters=4, random_state=42)  # اختر عدد الكلاسترات حسب الحاجة
-containers['cluster'] = kmeans.fit_predict(coords)
-
-# 4️⃣ رسم النتائج
-fig, ax = plt.subplots(figsize=(10,8))
-containers.plot(column='cluster', categorical=True, legend=True, cmap='Set1', ax=ax, markersize=30)
-plt.title("Cluster Analysis of Waste Containers (K-Means)")
-plt.show()
-
-# 5️⃣ حفظ النتائج
-containers.to_file("Containers_Clusters.shp")
-
 coordsControl.addTo(map);
 
     // Add layers to map with control options
@@ -154,6 +130,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
