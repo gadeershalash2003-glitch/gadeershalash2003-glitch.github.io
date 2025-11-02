@@ -95,27 +95,6 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       }).addTo(map);
     });
 
-    // 🔹 عرض الإحداثيات (Latitude / Longitude) أسفل الخريطة
-const coordsControl = L.control({ position: 'bottomleft' });
-
-coordsControl.onAdd = function (map) {
-  const div = L.DomUtil.create('div', 'coordinate-control');
-  div.style.background = 'rgba(255,255,255,0.8)';
-  div.style.padding = '5px 10px';
-  div.style.borderRadius = '5px';
-  div.style.fontSize = '12px';
-  div.style.fontWeight = 'bold';
-  div.innerHTML = 'Lat: -- , Lng: --';
-  map.on('mousemove', function (e) {
-    div.innerHTML =
-      'Lat: ' + e.latlng.lat.toFixed(5) + ' , Lng: ' + e.latlng.lng.toFixed(5);
-  });
-  return div;
-};
-
-coordsControl.addTo(map);
-
-
     // Add layers to map with control options
     const baseLayers = {};
     const overlays = {
@@ -129,6 +108,7 @@ coordsControl.addTo(map);
   </script>
 </body>
 </html>
+
 
 
 
