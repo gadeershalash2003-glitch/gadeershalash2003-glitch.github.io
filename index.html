@@ -49,7 +49,7 @@
       return container;
     }
   });
-  map.addControl(new northControl());
+  map.addControl(new northControl());.addTo(map);
 
   // 4️⃣ عرض الإحداثيات
   const coordsControl = L.control({ position: 'bottomleft' });
@@ -107,6 +107,7 @@
 </script>
 </body>
 </html>
+
 
 
 
