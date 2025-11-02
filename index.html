@@ -94,6 +94,36 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         }
       }).addTo(map);
     });
+    // 🔹 إضافة مقياس الرسم
+    L.control.scale({ position: "bottomleft", imperial: false }).addTo(map);
+
+    // 🔹 إضافة سهم الشمال
+    const north = L.control({ position: "topright" });
+    north.onAdd = function () {
+      const div = L.DomUtil.create("div", "info legend");
+      div.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/North_arrow.svg" style="width:50px;">';
+      return div;
+    };
+    north.addTo(map);
+
+    // 🔹 إضافة شعار بلدية رام الله
+    const logo = L.control({ position: "bottomright" });
+    logo.onAdd = function () {
+      const div = L.DomUtil.create("div");
+      div.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/2/2b/Ramallah_Logo.png" style="width:80px;">';
+      return div;
+    };
+    logo.addTo(map);
+
+    // 🔹 زر إعادة العرض إلى المركز الافتراضي
+    const resetView = L.control({ position: 'topleft' });
+    resetView.onAdd = function () {
+      const div = L.DomUtil.create('div', 'reset-btn');
+      div.innerHTML = '↺ Reset View';
+      div.onclick = () => map.setView([31.9045, 35.2045], 17.5);
+      return div;
+    };
+    resetView.addTo(map);
 
     // Add layers to map with control options
     const baseLayers = {};
@@ -108,6 +138,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
   </script>
 </body>
 </html>
+
 
 
 
