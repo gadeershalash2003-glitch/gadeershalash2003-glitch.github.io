@@ -94,10 +94,20 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
         }
       }).addTo(map);
     });
-       L.control.measure({
-         primaryLengthUnit: 'meters',
-         primaryAreaUnit: 'sqmeters'
-    }).addTo(map);
+    <!-- روابط مكتبة أداة القياس -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-measure@3.3.0/dist/leaflet-measure.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet-measure@3.3.0/dist/leaflet-measure.min.js"></script>
+
+<script>
+  // ✅ أداة القياس – ضع هذا الكود بعد إنشاء الخريطة مباشرة
+  L.control.measure({
+    position: 'topright',              // موقع الأداة على الخريطة
+    primaryLengthUnit: 'meters',       // وحدة الطول الأساسية
+    secondaryLengthUnit: 'kilometers', // وحدة الطول الثانوية
+    primaryAreaUnit: 'sqmeters',       // وحدة المساحة الأساسية
+    secondaryAreaUnit: 'hectares'      // وحدة المساحة الثانوية
+  }).addTo(map);
+</script>
 
     // Add layers to map with control options
     const baseLayers = {};
