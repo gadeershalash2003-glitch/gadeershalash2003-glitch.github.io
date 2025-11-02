@@ -67,21 +67,23 @@ L.control.scale({
     maxWidth: 150
 }).addTo(map);
     
-// 5️⃣ إضافة اشارة الشمال
-L.Control.North = L.Control.extend({
-    onAdd: function(map) {
-        const container = L.DomUtil.create('div');
+// 2️⃣ اشارة الشمال (North Arrow)
+ const northIcon = L.Control.extend({
+    options: { position: 'topright' },
+    onAdd: function (map) {
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
         container.style.backgroundImage = "url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/North_arrow.svg/120px-North_arrow.svg.png')";
-        container.style.backgroundSize = "40px 40px";
-        container.style.width = "40px";
-        container.style.height = "40px";
+        container.style.backgroundSize = "30px 30px";
+        container.style.width = "30px";
+        container.style.height = "30px";
         container.style.backgroundRepeat = "no-repeat";
         container.style.backgroundPosition = "center";
         return container;
     }
 });
-L.control.north = function(opts) { return new L.Control.North(opts); }
-L.control.north({ position: 'topright' }).addTo(map);
+  map.addControl(new northIcon());
+  
+coordsControl.addTo(map);
     
 // use jquery to load GeoJSON data
     
@@ -152,6 +154,7 @@ coordsControl.onAdd = function (map) {
   </script>
 </body>
 </html>
+
 
 
 
