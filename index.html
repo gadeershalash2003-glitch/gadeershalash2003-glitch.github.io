@@ -8,7 +8,6 @@
     body { margin:0; height:100%; width:100%; }
     #map { position:absolute; width:100%; top:0; bottom:0; }
 
-    /* صندوق الإحداثيات */
     .coords {
       background: rgba(255,255,255,0.8);
       padding: 5px;
@@ -16,7 +15,6 @@
       font-size: 12px;
     }
 
-    /* Popup الكاميرا */
     .popup-camera {
       display: flex;
       flex-direction: column;
@@ -25,7 +23,6 @@
       margin-top: 5px;
     }
 
-    /* Modal الكاميرا */
     #cameraModal {
       display:none;
       position:fixed;
@@ -66,29 +63,26 @@
     const mapOptions = { zoomSnap:0.5, center:[31.9045,35.2045], zoom:17.5 };
     const map = L.map("map", mapOptions);
 
-    // الخريطة الأساسية
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
       attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       subdomains:'abcd', maxZoom:20
     }).addTo(map);
 
-    // مقياس المسافة
     L.control.scale({position:'bottomleft', metric:true, imperial:false, maxWidth:200}).addTo(map);
 
-    // الطبقات
     let zonesLayer, wasteContainersLayer;
 
-    // عرض الإحداثيات
+    // إحداثيات الماوس
     const coordsDiv = L.control({position:'topright'});
     coordsDiv.onAdd = function(map){ this._div = L.DomUtil.create('div','coords'); this.update(); return this._div; };
     coordsDiv.update = function(latlng){ this._div.innerHTML = latlng ? `Lat: ${latlng.lat.toFixed(6)}<br>Lng: ${latlng.lng.toFixed(6)}` : 'مرر الماوس على الخريطة'; };
     coordsDiv.addTo(map);
     map.on('mousemove', e => coordsDiv.update(e.latlng));
 
-    // الحاويات مع الكاميرا
     let currentContainerId = null;
     let currentLayer = null;
 
+    // الحاويات
     $.getJSON("wasteContainer.json", function(WC){
       wasteContainersLayer = L.geoJson(WC,{
         pointToLayer: function(feature,latlng){
@@ -109,7 +103,7 @@
       }).addTo(map);
     });
 
-    // المناطق (Zones)
+    // المناطق
     $.getJSON("RamallahZones.json", function(RZ){
       zonesLayer = L.geoJson(RZ,{
         style: f=>({fillColor:"yellow", fillOpacity:0.3, color:"yellow", weight:1, opacity:0.7}),
@@ -120,7 +114,6 @@
         }
       }).addTo(map);
 
-      // تحكم الطبقات
       L.control.layers({}, {"Zones":zonesLayer,"Waste Containers":wasteContainersLayer}).addTo(map);
     });
 
@@ -146,13 +139,19 @@
       context.drawImage(video,0,0,canvas.width,canvas.height);
       const imageData = canvas.toDataURL('image/png');
 
-      // عرض الصورة داخل popup الحاوية مباشرة
+      // عرض الصورة داخل popup الحاوية
       const imageDiv = document.getElementById(`containerImage_${currentContainerId}`);
       if(imageDiv){
         imageDiv.innerHTML = `<img src="${imageData}" style="max-width:100%; margin-top:5px; border:1px solid #ccc;">`;
       }
 
-      alert("تم التقاط الصورة للحاوية ID: " + currentContainerId);
+      // حفظ الصورة مباشرة على الجهاز
+      const a = document.createElement('a');
+      a.href = imageData;
+      a.download = `Container_${currentContainerId}.png`;
+      a.click();
+
+      alert("تم التقاط الصورة وحفظها للحاوية ID: " + currentContainerId);
     });
 
     closeBtn.addEventListener('click', ()=>{
