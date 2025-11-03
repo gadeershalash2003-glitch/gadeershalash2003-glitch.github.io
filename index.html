@@ -99,7 +99,19 @@ $.getJSON("wasteContainer.json", function(WC){
   }).addTo(map);
   addLayerControl();
 });
-
+  function focusNearestZone(lat, lng){
+  if (!zonesLayer) return;
+  let minDist = Infinity, nearestLatLng = null;
+  zonesLayer.eachLayer(layer => {
+    const center = layer.getBounds().getCenter();
+    const dist = Math.sqrt(Math.pow(center.lat - lat, 2) + Math.pow(center.lng - lng, 2));
+    if (dist < minDist) {
+      minDist = dist;
+      nearestLatLng = center;
+    }
+  });
+  if (nearestLatLng) map.setView(nearestLatLng, 18);
+}
 
   $.getJSON("RamallahZones.json", function(RZ){
     zonesLayer = L.geoJson(RZ, {
@@ -132,6 +144,7 @@ $.getJSON("wasteContainer.json", function(WC){
 </script>
 </body>
 </html>
+
 
 
 
