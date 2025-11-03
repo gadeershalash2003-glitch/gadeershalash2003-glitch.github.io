@@ -81,7 +81,7 @@
     // عرض الإحداثيات
     const coordsDiv = L.control({position:'topright'});
     coordsDiv.onAdd = function(map){ this._div = L.DomUtil.create('div','coords'); this.update(); return this._div; };
-    coordsDiv.update = function(latlng){ this._div.innerHTML = latlng ? `Lat: ${latlng.lat.toFixed(6)}<br>Lng: ${latlng.lng.toFixed(6)}` : 'مرر الماوس على الخريطة'; };
+    coordsDiv.update = function(latlng){ this._div.innerHTML = latlng ? Lat: ${latlng.lat.toFixed(6)}<br>Lng: ${latlng.lng.toFixed(6)} : 'مرر الماوس على الخريطة'; };
     coordsDiv.addTo(map);
     map.on('mousemove', e => coordsDiv.update(e.latlng));
 
@@ -147,9 +147,9 @@
       const imageData = canvas.toDataURL('image/png');
 
       // عرض الصورة داخل popup الحاوية مباشرة
-      const imageDiv = document.getElementById(`containerImage_${currentContainerId}`);
+      const imageDiv = document.getElementById(containerImage_${currentContainerId});
       if(imageDiv){
-        imageDiv.innerHTML = `<img src="${imageData}" style="max-width:100%; margin-top:5px; border:1px solid #ccc;">`;
+        imageDiv.innerHTML = <img src="${imageData}" style="max-width:100%; margin-top:5px; border:1px solid #ccc;">;
       }
 
       alert("تم التقاط الصورة للحاوية ID: " + currentContainerId);
