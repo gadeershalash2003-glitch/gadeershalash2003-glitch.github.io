@@ -85,10 +85,7 @@
     coordsDiv.addTo(map);
     map.on('mousemove', e => coordsDiv.update(e.latlng));
 
-    // الحاويات مع الكاميرا
-    let currentContainerId = null;
-    let currentLayer = null;
-
+    // الحاويات
     $.getJSON("wasteContainer.json", function(WC){
       wasteContainersLayer = L.geoJson(WC,{
         pointToLayer: function(feature,latlng){
@@ -99,22 +96,22 @@
             const popupContent = `
               <div class="popup-camera">
                 <b>Container ID: ${feature.properties.ID || 'N/A'}</b>
-                <button onclick="openCamera('${feature.properties.ID || 'unknown}')">تصوير الحاوية</button>
-                <div id="containerImage_${feature.properties.ID}" style="margin-top:5px;"></div>
+                <button onclick="openCamera('${feature.properties.ID || 'unknown'}')">تصوير الحاوية</button>
               </div>`;
             layer.bindPopup(popupContent).openPopup();
-            currentLayer = layer;
           });
         }
       }).addTo(map);
     });
 
-    // المناطق (Zones)
+    // المناطق
     $.getJSON("RamallahZones.json", function(RZ){
       zonesLayer = L.geoJson(RZ,{
         style: f=>({fillColor:"yellow", fillOpacity:0.3, color:"yellow", weight:1, opacity:0.7}),
         onEachFeature: function(feature, layer){
+          // استخدم الحقل الصحيح من GeoJSON لاسم المنطقة
           const zoneName = feature.properties.TYPE_OF_WA || feature.properties.NAME || feature.properties.ZONE_NAME || "غير معروف";
+          // ربط Popup باسم المنطقة
           layer.bindPopup("اسم المنطقة: " + zoneName);
           layer.on('click', function(){ layer.openPopup(); });
         }
@@ -130,6 +127,7 @@
     const canvas = document.getElementById('canvas');
     const snapBtn = document.getElementById('snapBtn');
     const closeBtn = document.getElementById('closeBtn');
+    let currentContainerId = null;
 
     function openCamera(containerId){
       currentContainerId = containerId;
@@ -145,23 +143,15 @@
       const context = canvas.getContext('2d');
       context.drawImage(video,0,0,canvas.width,canvas.height);
       const imageData = canvas.toDataURL('image/png');
-
-      // عرض الصورة داخل popup الحاوية مباشرة
-      const imageDiv = document.getElementById(`containerImage_${currentContainerId}`);
-      if(imageDiv){
-        imageDiv.innerHTML = `<img src="${imageData}" style="max-width:100%; margin-top:5px; border:1px solid #ccc;">`;
-      }
-
       alert("تم التقاط الصورة للحاوية ID: " + currentContainerId);
+      console.log(imageData); // يمكن إرسالها للسيرفر هنا
     });
 
     closeBtn.addEventListener('click', ()=>{
       cameraModal.style.display = 'none';
-      if(video.srcObject){
-        const tracks = video.srcObject.getTracks();
-        tracks.forEach(track=>track.stop());
-        video.srcObject = null;
-      }
+      const tracks = video.srcObject.getTracks();
+      tracks.forEach(track=>track.stop());
+      video.srcObject = null;
     });
 
   </script>
