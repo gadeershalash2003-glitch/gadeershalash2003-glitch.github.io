@@ -73,35 +73,15 @@
   // تحميل الطبقات
   let wasteContainersLayer, zonesLayer;
 
-  // 🔸 طبقة الحاويات مع Popup متطور
-  $.getJSON("wasteContainer.json", function(WC){
+$.getJSON("wasteContainer.json", function(WC){
     wasteContainersLayer = L.geoJson(WC, {
       pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
-        radius:6, fillColor:"orange", color:"orange", weight:1, opacity:1, fillOpacity:0.8
-      }),
-      onEachFeature: function (feature, layer) {
-        const name = feature.properties.CONTAINER_ID || "Unknown Container";
-        const zone = feature.properties.ZONE_NAME || "Not specified";
-        const popupHTML = `
-          <div class="popup-content" style="text-align:center;font-family:Arial;">
-            <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png"
-                 alt="Container" style="width:70px;height:70px;border-radius:50%;margin-bottom:5px;">
-            <h4>🗑️ ${name}</h4>
-            <p><b>Zone:</b> ${zone}</p>
-            <p><b>Fill Level:</b> ${(Math.random()*100).toFixed(0)}%</p>
-            <a href="#" style="display:inline-block;background:#007bff;color:white;
-               padding:4px 8px;border-radius:5px;text-decoration:none;font-size:12px;"
-               onclick="focusNearestZone(${latlng.lat},${latlng.lng})">
-               Show nearest zone
-            </a>
-          </div>`;
-        layer.bindPopup(popupHTML);
-      }
+        radius:5, fillColor:"orange", color:"orange", weight:1, opacity:1, fillOpacity:0.8
+      })
     }).addTo(map);
     addLayerControl();
   });
 
-  // 🔸 طبقة المناطق + البحث + دالة الأقرب
   $.getJSON("RamallahZones.json", function(RZ){
     zonesLayer = L.geoJson(RZ, {
       style: feature => ({ fillColor:"yellow", fillOpacity:0.3, color:"yellow", weight:1, opacity:0.7 }),
@@ -110,7 +90,7 @@
       }
     }).addTo(map);
 
-    // البحث
+    // Search Control
     const searchControl = new L.Control.Search({
       layer: zonesLayer,
       propertyName: 'TYPE_OF_WA',
@@ -119,20 +99,6 @@
       moveToLocation: (latlng,title,map) => map.setView(latlng,18)
     });
     map.addControl(searchControl);
-
-    // ✅ الدالة بعد تحميل المناطق
-    window.focusNearestZone = function(lat, lng){
-      let minDist = Infinity, nearestLatLng = null;
-      zonesLayer.eachLayer(layer => {
-        const center = layer.getBounds().getCenter();
-        const dist = Math.sqrt(Math.pow(center.lat - lat, 2) + Math.pow(center.lng - lng, 2));
-        if (dist < minDist) {
-          minDist = dist;
-          nearestLatLng = center;
-        }
-      });
-      if (nearestLatLng) map.setView(nearestLatLng, 18);
-    };
 
     addLayerControl();
   });
