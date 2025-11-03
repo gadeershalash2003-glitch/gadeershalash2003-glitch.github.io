@@ -18,6 +18,14 @@
       top: 0px;
       bottom: 0;
     }
+
+    /* ستايل لصندوق الإحداثيات */
+    .coords {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
   </style>
 </head>
 
@@ -44,7 +52,7 @@
       maxZoom: 20
     }).addTo(map);
 
-    // إضافة مقياس المسافة (Scale) إلى الخريطة
+    // إضافة مقياس المسافة (Scale)
     L.control.scale({
       position: 'bottomleft',
       metric: true,
@@ -52,11 +60,11 @@
       maxWidth: 200
     }).addTo(map);
 
-    // تعريف الـ layers
+    // تعريف الطبقات
     let zonesLayer;
     let wasteContainersLayer;
 
-    // تحميل بيانات الحاويات وإضافتها للـ layer
+    // تحميل بيانات الحاويات
     $.getJSON("wasteContainer.json", function(WC) {
       wasteContainersLayer = L.geoJson(WC, {
         pointToLayer: function(feature, latlng) {
@@ -72,7 +80,7 @@
       }).addTo(map);
     });
 
-    // تحميل بيانات المناطق (Zones) وإضافتها للـ layer
+    // تحميل بيانات المناطق
     $.getJSON("RamallahZones.json", function(RZ) {
       zonesLayer = L.geoJson(RZ, {
         style: function(feature) {
@@ -99,6 +107,28 @@
       };
 
       L.control.layers(baseLayers, overlays).addTo(map);
+    });
+
+    // إضافة صندوق عرض الإحداثيات
+    const coordsDiv = L.control({ position: 'topright' });
+
+    coordsDiv.onAdd = function(map) {
+      this._div = L.DomUtil.create('div', 'coords');
+      this.update();
+      return this._div;
+    };
+
+    coordsDiv.update = function(latlng) {
+      this._div.innerHTML = latlng ?
+        `Lat: ${latlng.lat.toFixed(6)}<br>Lng: ${latlng.lng.toFixed(6)}` :
+        'مرر الماوس على الخريطة';
+    };
+
+    coordsDiv.addTo(map);
+
+    // تحديث الإحداثيات عند حركة الماوس
+    map.on('mousemove', function(e) {
+      coordsDiv.update(e.latlng);
     });
   </script>
 </body>
