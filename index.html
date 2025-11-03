@@ -99,6 +99,7 @@ $.getJSON("wasteContainer.json", function(WC){
   }).addTo(map);
   addLayerControl();
 });
+  
   function focusNearestZone(lat, lng){
   if (!zonesLayer) return;
   let minDist = Infinity, nearestLatLng = null;
@@ -144,6 +145,7 @@ $.getJSON("wasteContainer.json", function(WC){
 </script>
 </body>
 </html>
+
 
 
 
