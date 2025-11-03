@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <title>Ramallah Waste Containers</title>
 
-<!-- Leaflet CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.css" />
 
@@ -18,125 +17,125 @@
     font-size: 12px;
     font-weight: bold;
   }
-  .leaflet-control-search input { width: 200px; padding: 3px; }
 </style>
 </head>
 <body>
 <div id="map"></div>
 
-<!-- JS Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-control-search/dist/leaflet-search.min.js"></script>
 
 <script>
-// إنشاء الخريطة
 const map = L.map('map', { zoomSnap:0.5, center:[31.9045,35.2045], zoom:17.5 });
-
-// إضافة الطبقة الأساسية
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution:'&copy; OpenStreetMap contributors &copy; CARTO',
-  subdomains:'abcd', maxZoom:20
+  attribution:'&copy; OpenStreetMap contributors &copy; CARTO', subdomains:'abcd', maxZoom:20
 }).addTo(map);
 
-// مقياس الرسم
-L.control.scale({ position:'bottomright', metric:true, imperial:false, maxWidth:150 }).addTo(map);
-
-// إشارة الشمال
+// مقياس وإشارة الشمال
+L.control.scale({ position:'bottomright', metric:true }).addTo(map);
 const northControl = L.Control.extend({
   options:{ position:'topright' },
-  onAdd: function(map){
-    const container = L.DomUtil.create('div');
-    container.style.width='40px';
-    container.style.height='40px';
-    container.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/commons/3/3c/North_arrow_04.png')";
-    container.style.backgroundSize="contain";
-    container.style.backgroundRepeat="no-repeat";
-    container.style.backgroundPosition="center";
-    return container;
+  onAdd:function(map){
+    const div = L.DomUtil.create('div');
+    div.style.width='40px'; div.style.height='40px';
+    div.style.backgroundImage="url('https://upload.wikimedia.org/wikipedia/commons/3/3c/North_arrow_04.png')";
+    div.style.backgroundSize="contain"; div.style.backgroundRepeat="no-repeat";
+    div.style.backgroundPosition="center";
+    return div;
   }
 });
 map.addControl(new northControl());
 
 // عرض الإحداثيات
-const coordsControl = L.control({ position:'bottomleft' });
-coordsControl.onAdd = function(map){
+const coords = L.control({ position:'bottomleft' });
+coords.onAdd = map => {
   const div = L.DomUtil.create('div','coordinate-control');
   div.innerHTML='Lat: -- , Lng: --';
-  map.on('mousemove', e => {
-    div.innerHTML=`Lat: ${e.latlng.lat.toFixed(5)}, Lng: ${e.latlng.lng.toFixed(5)}`;
-  });
+  map.on('mousemove', e => div.innerHTML=`Lat: ${e.latlng.lat.toFixed(5)}, Lng: ${e.latlng.lng.toFixed(5)}`);
   return div;
 };
-coordsControl.addTo(map);
+coords.addTo(map);
 
-// تحميل الطبقات
-let wasteContainersLayer, zonesLayer;
+let wasteContainersLayer, zonesLayer, zonesCenters = [];
 
-// تحميل نقاط الحاويات مع popup متطور
+// تحميل المناطق
+$.getJSON("RamallahZones.json", function(RZ){
+  zonesLayer = L.geoJson(RZ, {
+    style: f => ({ fillColor:"yellow", fillOpacity:0.3, color:"yellow", weight:1 }),
+    onEachFeature: (f,l) => {
+      const center = l.getBounds().getCenter();
+      zonesCenters.push({
+        name: f.properties.TYPE_OF_WA || "Unknown Zone",
+        center: center
+      });
+    }
+  }).addTo(map);
+
+  const searchControl = new L.Control.Search({
+    layer: zonesLayer,
+    propertyName: 'TYPE_OF_WA',
+    marker:false,
+    textPlaceholder:'ابحث عن المنطقة...',
+    moveToLocation:(latlng,title,map)=>map.setView(latlng,18)
+  });
+  map.addControl(searchControl);
+  addLayerControl();
+});
+
+// تحميل الحاويات
 $.getJSON("wasteContainer.json", function(WC){
   wasteContainersLayer = L.geoJson(WC, {
     pointToLayer: (feature, latlng) => {
       const marker = L.circleMarker(latlng, {
         radius:6, fillColor:"#ff9800", color:"#fff", weight:1, opacity:1, fillOpacity:0.9
       });
-      const popupHTML = `
+      marker.bindPopup(`
         <div style="text-align:center;">
-          <h4 style="margin:4px;">🗑️ ${feature.properties.name || 'Container'}</h4>
-          <p>📍 ${feature.properties.area || 'Unknown area'}</p>
-          <img src="https://cdn-icons-png.flaticon.com/512/679/679922.png" width="60"><br>
-          <button onclick="alert('Nearest zone feature coming soon!')" style="margin-top:5px;">Show nearest zone</button>
-        </div>`;
-      marker.bindPopup(popupHTML);
+          <h4 style="margin:4px;">🗑️ ${feature.properties.CONTAINER_ID || 'Container'}</h4>
+          <p><b>Zone:</b> <span id="zone-${feature.properties.CONTAINER_ID || Math.random()}">جارٍ التحديد...</span></p>
+          <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" width="60"><br>
+          <button onclick="focusNearestZone(${latlng.lat},${latlng.lng},'zone-${feature.properties.CONTAINER_ID || Math.random()}')">
+            Show nearest zone
+          </button>
+        </div>
+      `);
       return marker;
     }
   }).addTo(map);
   addLayerControl();
 });
 
-// تحميل مناطق رام الله
-$.getJSON("RamallahZones.json", function(RZ){
-  zonesLayer = L.geoJson(RZ, {
-    style: feature => ({
-      fillColor:"yellow", fillOpacity:0.3, color:"yellow", weight:1, opacity:0.7
-    }),
-    onEachFeature: (feature, layer) => {
-      layer.on('click', () => {
-        const popupHTML = `
-          <div style="text-align:center;">
-            <h4 style="margin:4px;">📍 ${feature.properties.TYPE_OF_WA}</h4>
-            <p>رمز البريد: ${feature.properties.MAIL_CODE || 'غير متوفر'}</p>
-          </div>`;
-        layer.bindPopup(popupHTML).openPopup();
-      });
+// دالة إيجاد أقرب منطقة
+function focusNearestZone(lat, lng, labelId){
+  if (!zonesCenters.length) {
+    alert("لم يتم تحميل المناطق بعد.");
+    return;
+  }
+  let minDist = Infinity, nearestZone = null;
+  zonesCenters.forEach(zone => {
+    const d = Math.sqrt(Math.pow(zone.center.lat - lat,2) + Math.pow(zone.center.lng - lng,2));
+    if (d < minDist) {
+      minDist = d;
+      nearestZone = zone;
     }
-  }).addTo(map);
-
-  // البحث داخل المناطق
-  const searchControl = new L.Control.Search({
-    layer: zonesLayer,
-    propertyName: 'TYPE_OF_WA',
-    marker:false,
-    textPlaceholder:'ابحث عن المنطقة...',
-    moveToLocation: (latlng,title,map) => map.setView(latlng,18)
   });
-  map.addControl(searchControl);
+  if (nearestZone) {
+    document.getElementById(labelId).innerText = nearestZone.name;
+    map.setView(nearestZone.center, 18);
+  }
+}
 
-  addLayerControl();
-});
-
-// التحكم بالطبقات
+// تحكم بالطبقات
 function addLayerControl(){
   if(wasteContainersLayer && zonesLayer){
-    L.control.layers({}, {
-      "Zones":zonesLayer,
-      "Waste Containers":wasteContainersLayer
-    }).addTo(map);
+    L.control.layers({}, {"Zones":zonesLayer, "Waste Containers":wasteContainersLayer}).addTo(map);
   }
 }
 </script>
 </body>
 </html>
+
 
 
 
